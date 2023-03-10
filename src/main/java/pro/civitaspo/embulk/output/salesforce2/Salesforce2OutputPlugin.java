@@ -1,4 +1,4 @@
-package org.embulk.output.salesforce2;
+package pro.civitaspo.embulk.output.salesforce2;
 
 import java.util.List;
 
