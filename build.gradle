@@ -1,0 +1,67 @@
+plugins {
+    id "java"
+    id "maven-publish"
+    id "org.embulk.embulk-plugins" version "0.5.5"
+    id "com.diffplug.spotless" version "5.15.0"
+    id "com.palantir.git-version" version "3.0.0"
+}
+repositories {
+    mavenCentral()
+}
+
+group = "pro.civitaspo"
+description = "An embulk output plugin to load/insert data into Salesforce via Bulk API 2.0."
+version = {
+    def vd = versionDetails()
+    if (vd.commitDistance == 0 && vd.lastTag ==~ /^[0-9]+\.[0-9]+\.[0-9]+(\.[a-zA-Z0-9]+)?/) {
+        vd.lastTag
+    } else {
+        "0.0.0.${vd.gitHash}"
+    }
+}()
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    def embulkVersion = "0.10.43"
+    compileOnly "org.embulk:embulk-api:${embulkVersion}"
+    compileOnly "org.embulk:embulk-spi:${embulkVersion}"
+
+    compile "org.embulk:embulk-util-config:0.3.4"
+    compile "org.embulk:embulk-util-json:0.3.0"
+    compile "org.embulk:embulk-util-timestamp:0.2.2"
+    compile "org.embulk:embulk-util-retryhelper-jaxrs:0.8.2"
+
+    testImplementation "junit:junit:4.+"
+    testImplementation "org.embulk:embulk-core:${embulkVersion}"
+    testImplementation "org.embulk:embulk-deps:${embulkVersion}"
+}
+
+embulkPlugin {
+    mainClass = "pro.civitaspo.embulk.output.salesforce2.Salesforce2OutputPlugin"
+    category = "output"
+    type = "salesforce2"
+}
+publishing {
+    publications {
+        embulkPluginMaven(MavenPublication) {
+            from components.java
+        }
+    }
+}
+gem {
+    from("LICENSE.txt")
+    authors = [ "civitaspo" ]
+    email = [ "civitaspo@gmail.com" ]
+    summary = "An embulk output plugin to load/insert data into Salesforce via Bulk API 2.0."
+    homepage = "https://github.com/civitaspo/embulk-output-salesforce2"
+    licenses = [ "MIT" ]
+}
+spotless {
+    java {
+        importOrder()
+        removeUnusedImports()
+        googleJavaFormat().aosp()
+    }
+}
