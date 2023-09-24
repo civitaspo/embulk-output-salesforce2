@@ -33,7 +33,7 @@
 ```yaml
 out:
   type: salesforce2
-  auth_method: client_credentials
+  auth_method: oauth2_client_credentials
   client_id: xxxxxxxxxxxxxxxxxxxxxx
   client_secret: xxxxxxxxxxxxxxxxxxxxxx
   host: civitaspo.my.salesforce.com
