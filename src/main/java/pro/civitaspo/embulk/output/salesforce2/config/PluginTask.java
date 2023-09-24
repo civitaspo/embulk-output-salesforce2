@@ -1,7 +1,9 @@
 package pro.civitaspo.embulk.output.salesforce2.config;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.PositiveOrZero;
 import java.util.Optional;
 import org.embulk.config.ConfigException;
 import org.embulk.util.config.Config;
@@ -10,6 +12,7 @@ import org.embulk.util.config.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pro.civitaspo.embulk.output.salesforce2.config.validation.annotation.NotBlankIfPresent;
+import pro.civitaspo.embulk.output.salesforce2.config.validation.annotation.ValidZoneId;
 import pro.civitaspo.embulk.output.salesforce2.config.validation.annotation.ValueOfEnum;
 
 public interface PluginTask extends Task {
@@ -146,4 +149,36 @@ public interface PluginTask extends Task {
     @Config("object")
     @NotBlank
     public String getObject();
+
+    @Config("maximum_retries")
+    @ConfigDefault("7")
+    @PositiveOrZero
+    public int getMaximumRetries();
+
+    @Config("initial_retry_interval_millis")
+    @ConfigDefault("1000")
+    @PositiveOrZero
+    public int getInitialRetryIntervalMillis();
+
+    @Config("maximum_retry_interval_millis")
+    @ConfigDefault("60000")
+    @PositiveOrZero
+    public int getMaximumRetryIntervalMillis();
+
+    @Config("default_timezone")
+    @ConfigDefault("\"UTC\"")
+    @NotBlank
+    @ValidZoneId
+    public String getDefaultTimeZoneId();
+
+    @Config("default_timestamp_format")
+    @ConfigDefault("\"%Y-%m-%d %H:%M:%S.%N %z\"")
+    @NotNull
+    public String getDefaultTimestampFormat();
+
+    @Config("default_date")
+    @ConfigDefault("\"1970-01-01\"")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$")
+    @NotBlank
+    public String getDefaultDate();
 }
